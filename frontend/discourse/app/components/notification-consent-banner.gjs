@@ -3,7 +3,10 @@ import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DButton from "discourse/components/d-button";
-import { keyValueStore as pushNotificationKeyValueStore } from "discourse/lib/push-notifications";
+import {
+  isPushNotificationsSupported,
+  keyValueStore as pushNotificationKeyValueStore,
+} from "discourse/lib/push-notifications";
 import { i18n } from "discourse-i18n";
 
 const userDismissedPromptKey = "dismissed-prompt";
@@ -39,7 +42,8 @@ export default class NotificationConsentBanner extends Component {
       Notification.permission !== "denied" &&
       Notification.permission !== "granted" &&
       !this.desktopNotifications.isEnabled &&
-      !this.bannerDismissed
+      !this.bannerDismissed &&
+      isPushNotificationsSupported()
     );
   }
 
@@ -51,7 +55,7 @@ export default class NotificationConsentBanner extends Component {
 
   @action
   dismiss() {
-    this.setBannerDismissed(false);
+    this.setBannerDismissed(true);
   }
 
   <template>
